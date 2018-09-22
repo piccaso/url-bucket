@@ -138,5 +138,10 @@ namespace UrlBucket.Controllers {
                 return Exception(e);
             }
         }
+
+        [HttpGet("/"),ApiExplorerSettings(IgnoreApi = true)]
+        public IActionResult Index() {
+            return Redirect("~/swagger");
+        }
     }
 }
