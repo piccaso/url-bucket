@@ -7,6 +7,13 @@
     <UserSecretsId>7813f0e7-8efb-4ba8-9a5c-62b1e6516661</UserSecretsId>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <NoWarn>CS1591;$(NoWarn)</NoWarn>
+  </PropertyGroup>
+
   <ItemGroup>
     <Folder Include="wwwroot\" />
   </ItemGroup>

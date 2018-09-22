@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
@@ -26,9 +27,13 @@ namespace UrlBucket {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddMvc();
 
-            services.AddSwaggerGen(c =>
-            {
+            var xmlComments = Directory.GetFiles(System.AppContext.BaseDirectory, "*.xml");
+
+            services.AddSwaggerGen(c => {
                 c.SwaggerDoc("v1", new Info { Title = "UrlBucket API", Version = "v1" });
+                foreach (var xmlComment in xmlComments) {
+                    c.IncludeXmlComments(xmlComment);
+                }
             });
 
             services.AddTransient<StorageService>();
