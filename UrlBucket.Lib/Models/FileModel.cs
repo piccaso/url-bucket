@@ -3,13 +3,16 @@ using Microsoft.Build.Framework;
 
 namespace UrlBucket.Lib.Models {
 
-    public class BaseFileModel {
-        [Required]
-        public byte[] Content { get; set; }
+    public class BaseFileContentTypeModel {
         public string ContentType { get; set; }
     }
 
-    public class FileModel : BaseFileModel {
+    public class BaseFileContentModel : BaseFileContentTypeModel {
+        [Required]
+        public byte[] Content { get; set; }
+    }
+
+    public class FileModel : BaseFileContentModel {
         public string ObjectName;
     }
 
@@ -17,7 +20,7 @@ namespace UrlBucket.Lib.Models {
         public string Etag { get; set; }
     }
 
-    public class UploadFileModel : BaseFileModel {
+    public class UploadFileModel : BaseFileContentModel {
         [Required]
         public Uri Url { get; set; }
     }

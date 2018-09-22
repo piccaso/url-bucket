@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -9,59 +10,100 @@ using Microsoft.AspNetCore.Mvc;
 using UrlBucket.Lib.Models;
 using UrlBucket.Lib.Services;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 
 namespace UrlBucket.Controllers {
-    [Route("api")]
-    [ApiController]
+
+    [Route("api"), ApiController]
     public class ApiController : ControllerBase {
         private readonly StorageService _storageService;
         private readonly DownloadService _downloadService;
+        private readonly ILogger _logger;
 
-        public ApiController(StorageService storageService, DownloadService downloadService) {
+        public ApiController(StorageService storageService, DownloadService downloadService, ILogger<ApiController> logger) {
             _storageService = storageService;
             _downloadService = downloadService;
+            _logger = logger;
         }
 
-        [HttpGet("store-url")]
-        [ProducesResponseType(typeof(FileModel),StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ProblemDetails),StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<FileModel>> StoreUrl([Required] Uri url, string userAgent = null, CancellationToken ct = default(CancellationToken)) {
+        private ProblemDetails Sucess(int status = StatusCodes.Status200OK) => new ProblemDetails {Status = status, Title = "Sucess"};
 
+        private BadRequestObjectResult Exception(Exception e) {
+            _logger.LogError(e, "");
+            var pd = new ProblemDetails {
+                Status = 400,
+                Title = e.Message,
+                Detail = e.GetType().FullName,
+            };
+            try {
+                var frame = new StackTrace(e, true).GetFrame(0);
+                pd.Extensions["line"] = frame.GetFileLineNumber();
+                pd.Extensions["file"] = frame.GetFileName();
+                pd.Extensions["method"] = frame.GetMethod();
+            }
+            catch {
+                // no stacktrace available (release build without pdb...)
+            }
+            return BadRequest(pd);
+        }
+
+        private NotFoundObjectResult FileNotFound() => NotFound(new ProblemDetails{Status = 404, Title = "Not found"});
+
+        /// <summary>
+        /// Stores an asset after downloading it from the given URL.
+        /// </summary>
+        /// <param name="url">The URL where the asset is currently located</param>
+        /// <param name="userAgent">Optional 'user-agent' header to use when downloading</param>
+        /// <param name="ct"></param>
+        /// <returns></returns>
+        [HttpGet("store-url")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<ProblemDetails>> Get([Required] Uri url, string userAgent = null, CancellationToken ct = default(CancellationToken)) {
             try {
                 var file = await _downloadService.DownloadUrlAsync(url, userAgent);
                 await _storageService.UploadFileAsync(file, ct);
+                return Sucess();
+            }
+            catch (Exception e) {
+                return Exception(e);
+            }
+        }
+
+        /// <summary>
+        /// Retrieves a previously stored asset as an easy to consume model.
+        /// </summary>
+        /// <param name="url">The URL identifying the asset</param>
+        /// <param name="ct"></param>
+        /// <returns></returns>
+        [HttpGet("retrieve")]
+        [ProducesResponseType(typeof(DownloadFileModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<DownloadFileModel>> RetrieveFile([Required] Uri url, CancellationToken ct = default(CancellationToken)) {
+            
+            try {
+                var file = await _storageService.DownloadFileAsync(url, ct);
+                if (file is null) return FileNotFound();
                 return Ok(file);
             }
             catch (Exception e) {
-                return BadRequest(new ProblemDetails() {
-                    Status = 400,
-                    Detail = e.Message,
-                    Title = e.GetType().FullName,
-                });
+                return Exception(e);
             }
         }
 
-        [HttpPost("store-file")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(typeof(ProblemDetails),StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult> StoreFile([FromBody] UploadFileModel file, CancellationToken ct = default(CancellationToken)) {
-            try {
-                await _storageService.UploadFileAsync(file, ct);
-                return NoContent();
-            }
-            catch (Exception e) {
-                return BadRequest(new ProblemDetails() {
-                    Status = 400,
-                    Detail = e.Message,
-                    Title = e.GetType().FullName,
-                });
-            }
-        }
-
+        /// <summary>
+        /// Stores an asset (without downloading it).
+        /// </summary>
+        /// <param name="content">Content of the asset</param>
+        /// <param name="url">URL identifying the asset</param>
+        /// <param name="contentType">Content type of the asset</param>
+        /// <param name="ct"></param>
+        /// <returns></returns>
         [HttpPost("store-bytes")]
-        [ProducesResponseType(typeof(ProblemDetails),StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public async Task<ActionResult> StoreBytes([FromBody,Required] byte[] content, [Required] Uri url, string contentType ,CancellationToken ct = default(CancellationToken)) {
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<ProblemDetails>> StoreBytes([FromBody,Required] byte[] content, [Required] Uri url, string contentType ,CancellationToken ct = default(CancellationToken)) {
             try {
                 var file = new UploadFileModel {
                     Content = content,
@@ -69,55 +111,31 @@ namespace UrlBucket.Controllers {
                     ContentType = contentType,
                 };
                 await _storageService.UploadFileAsync(file, ct);
-                return NoContent();
+                return Sucess();
             }
             catch (Exception e) {
-                return BadRequest(new ProblemDetails() {
-                    Status = 400,
-                    Detail = e.Message,
-                    Title = e.GetType().FullName,
-                });
+                return Exception(e);
             }
         }
 
-
-        [HttpGet("retrieve-file")]
-        [ProducesResponseType(typeof(DownloadFileModel),StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ProblemDetails),StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<DownloadFileModel>> RetrieveFile(Uri url, CancellationToken ct = default(CancellationToken)) {
-            
-            try {
-                var file = await _storageService.DownloadFileAsync(url, ct);
-                if (file is null) return NotFound();
-                return Ok(file);
-            }
-            catch (Exception e) {
-                return BadRequest(new ProblemDetails() {
-                    Status = 400,
-                    Detail = e.Message,
-                    Title = e.GetType().FullName,
-                });
-            }
-        }
-
+        /// <summary>
+        /// Retrieves a previously stored asset as HTTP Response.
+        /// </summary>
+        /// <param name="url">The URL identifying the asset</param>
+        /// <param name="ct"></param>
+        /// <returns></returns>
         [HttpGet("retrieve-bytes")]
-        [ProducesResponseType(typeof(byte[]),StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ProblemDetails),StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<DownloadFileModel>> RetrieveBytes(Uri url, CancellationToken ct = default(CancellationToken)) {
-
+        public async Task<ActionResult<byte[]>> RetrieveBytes([Required] Uri url, CancellationToken ct = default(CancellationToken)) {
             try {
                 var file = await _storageService.DownloadFileAsync(url, ct);
-                if (file is null) return NotFound();
+                if (file is null) return FileNotFound();
                 return File(file.Content, file.ContentType);
             }
             catch (Exception e) {
-                return BadRequest(new ProblemDetails() {
-                    Status = 400,
-                    Detail = e.Message,
-                    Title = e.GetType().FullName,
-                });
+                return Exception(e);
             }
         }
     }
