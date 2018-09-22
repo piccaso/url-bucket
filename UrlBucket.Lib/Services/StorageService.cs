@@ -12,6 +12,7 @@ using UrlBucket.Lib.Models;
 namespace UrlBucket.Lib.Services {
     public class StorageService {
         private string _bucketName;
+        private static bool? _bucketExists;
         private MinioClient CreateClient() {
 
             string E(string name, string defaultValue) {
@@ -44,9 +45,10 @@ namespace UrlBucket.Lib.Services {
         public async Task UploadFileAsync(string objectName, byte[] content, string contentType = null, IDictionary<string,string> metaData = null, CancellationToken ct = default(CancellationToken)) {
             var client = CreateClient();
 
-            var exists = await client.BucketExistsAsync(_bucketName, ct);
+            var exists = _bucketExists ?? await client.BucketExistsAsync(_bucketName, ct);
             if (!exists) {
                 await client.MakeBucketAsync(_bucketName, cancellationToken: ct);
+                _bucketExists = true;
             }
 
             var metadataDict = new Dictionary<string, string>(metaData ?? new Dictionary<string,string>()) {
