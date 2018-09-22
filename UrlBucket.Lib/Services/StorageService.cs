@@ -51,12 +51,8 @@ namespace UrlBucket.Lib.Services {
                 _bucketExists = true;
             }
 
-            var metadataDict = new Dictionary<string, string>(metaData ?? new Dictionary<string,string>()) {
-                {"upload-datetime-utc", DateTime.UtcNow.ToString(CultureInfo.InvariantCulture)}
-            };
-
             using (var ms = new MemoryStream(content)) {
-                await client.PutObjectAsync(_bucketName, objectName, ms, ms.Length, contentType, metadataDict, ct);
+                await client.PutObjectAsync(_bucketName, objectName, ms, ms.Length, contentType, metaData.ToDictionary(), ct);
             }
         }
 

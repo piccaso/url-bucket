@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -22,5 +23,7 @@ namespace UrlBucket.Lib.Helper {
             }
             return sb.ToString();
         }
+
+        public static Dictionary<TK, TV> ToDictionary<TK, TV>(this IDictionary<TK, TV> dictionary) => dictionary is null ? null : new Dictionary<TK, TV>(dictionary);
     }
 }
