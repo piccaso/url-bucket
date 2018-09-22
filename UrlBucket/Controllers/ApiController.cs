@@ -42,12 +42,34 @@ namespace UrlBucket.Controllers {
         }
 
         [HttpPost("store-file")]
-        [ProducesResponseType(typeof(FileModel),StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ProblemDetails),StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<FileModel>> StoreFile([FromBody] UploadFileModel file, CancellationToken ct = default(CancellationToken)) {
+        public async Task<ActionResult> StoreFile([FromBody] UploadFileModel file, CancellationToken ct = default(CancellationToken)) {
             try {
                 await _storageService.UploadFileAsync(file, ct);
-                return Ok(file);
+                return NoContent();
+            }
+            catch (Exception e) {
+                return BadRequest(new ProblemDetails() {
+                    Status = 400,
+                    Detail = e.Message,
+                    Title = e.GetType().FullName,
+                });
+            }
+        }
+
+        [HttpPost("store-bytes")]
+        [ProducesResponseType(typeof(ProblemDetails),StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        public async Task<ActionResult> StoreBytes([FromBody,Required] byte[] content, [Required] Uri url, string contentType ,CancellationToken ct = default(CancellationToken)) {
+            try {
+                var file = new UploadFileModel {
+                    Content = content,
+                    Url = url,
+                    ContentType = contentType,
+                };
+                await _storageService.UploadFileAsync(file, ct);
+                return NoContent();
             }
             catch (Exception e) {
                 return BadRequest(new ProblemDetails() {
