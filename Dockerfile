@@ -1,18 +1,19 @@
-FROM microsoft/dotnet:2.2-aspnetcore-runtime AS base
+FROM microsoft/dotnet:2.2-aspnetcore-runtime-alpine AS base
 WORKDIR /app
 ENV ASPNETCORE_URLS="http://+:80"
 EXPOSE 80
 
-FROM microsoft/dotnet:2.2-sdk AS build
+FROM microsoft/dotnet:2.2-sdk-alpine AS build
 WORKDIR /src
-COPY ["UrlBucket/UrlBucket.csproj", "UrlBucket/"]
-RUN dotnet restore "UrlBucket/UrlBucket.csproj"
+COPY ["UrlBucket/*.csproj", "UrlBucket/"]
+COPY ["UrlBucket.Lib/*.csproj", "UrlBucket.Lib/"]
+RUN cd UrlBucket.Lib/ && dotnet restore 
 COPY . .
-WORKDIR "/src/UrlBucket"
-RUN dotnet build "UrlBucket.csproj" -c Release -o /app
+WORKDIR /src/UrlBucket
 
 FROM build AS publish
 RUN dotnet publish "UrlBucket.csproj" -c Release -o /app
+RUN chmod -R 0400 /app
 
 FROM base AS final
 WORKDIR /app
