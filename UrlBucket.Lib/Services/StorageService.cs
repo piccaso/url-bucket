@@ -80,6 +80,9 @@ namespace UrlBucket.Lib.Services {
                 fm.Etag = stat.ETag;
                 return fm;
             }
+            catch (BucketNotFoundException) {
+                return null;
+            }
             catch (ObjectNotFoundException) {
                 return null;
             }
