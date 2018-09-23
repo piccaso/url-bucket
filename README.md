@@ -1,9 +1,8 @@
 # url-bucket
 Small wrapper around [minio](https://www.minio.io/) to store web assets.  
 
-`url-bucket` provides a REST API and includes Swagger UI.  
-All packaged as [docker container](https://hub.docker.com/r/0xff/url-bucket/).
-By default it will use the demo minio instance running at [play.minio.io](http://play.minio.io/).
+It provides a REST API and includes Swagger UI - packaged as [docker container](https://hub.docker.com/r/0xff/url-bucket/).  
+By default it will use the demo minio instance running at [play.minio.io](http://play.minio.io/).  
 
 For a quick demo run:
 ```sh
