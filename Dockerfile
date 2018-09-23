@@ -1,9 +1,9 @@
-FROM microsoft/dotnet:2.2-aspnetcore-runtime-alpine AS base
+FROM microsoft/dotnet:2.1-aspnetcore-runtime-alpine AS base
 WORKDIR /app
 ENV ASPNETCORE_URLS="http://+:80"
 EXPOSE 80
 
-FROM microsoft/dotnet:2.2-sdk-alpine AS build
+FROM microsoft/dotnet:2.1-sdk-alpine AS build
 WORKDIR /src
 COPY ["UrlBucket/*.csproj", "UrlBucket/"]
 COPY ["UrlBucket.Lib/*.csproj", "UrlBucket.Lib/"]

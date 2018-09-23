@@ -37,9 +37,7 @@ namespace UrlBucket.Controllers {
             };
             try {
                 var frame = new StackTrace(e, true).GetFrame(0);
-                pd.Extensions["line"] = frame.GetFileLineNumber();
-                pd.Extensions["file"] = frame.GetFileName();
-                pd.Extensions["method"] = frame.GetMethod();
+                var details = $" Method:{frame.GetMethod()} Line:{frame.GetFileLineNumber()} File:{frame.GetFileName()}";
             }
             catch {
                 // no stacktrace available (release build without pdb...)
