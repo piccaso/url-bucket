@@ -7,7 +7,7 @@ FROM microsoft/dotnet:2.1-sdk-alpine AS build
 WORKDIR /src
 COPY ["UrlBucket/*.csproj", "UrlBucket/"]
 COPY ["UrlBucket.Lib/*.csproj", "UrlBucket.Lib/"]
-RUN cd UrlBucket.Lib/ && dotnet restore 
+RUN cd UrlBucket/ && dotnet restore 
 COPY . .
 WORKDIR /src/UrlBucket
 
