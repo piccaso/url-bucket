@@ -12,3 +12,5 @@ And point your Browser to [localhost:8080](http://localhost:8080/).
 
 To use your own instance of minio (or any S3 compatible storage) you have to set some environment variables.  
 To get started have a look at the provided [docker-compose.yml](samples/docker-compose.yml) example.
+
+[![Badge](https://quay.io/repository/0xff/url-bucket/status "Badge")](https://quay.io/repository/0xff/url-bucket)
