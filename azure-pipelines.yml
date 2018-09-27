@@ -12,4 +12,12 @@ variables:
 steps:
 - script: docker-compose -f integration-tests.yml up -d
 - script: dotnet build --configuration $(buildConfiguration)
+- script: dotnet test <test-project> --logger trx --collect "Code coverage"
+  env:
+    MINIO_ENDPOINT: "localhost:9000"
+    MINIO_SSL: "False"
+- task: PublishTestResults@2
+  inputs:
+    testRunner: VSTest
+    testResultsFiles: '**/*.trx'
 - script: docker-compose -f integration-tests.yml down || true

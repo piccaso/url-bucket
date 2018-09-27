@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28010.2026
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UrlBucket", "UrlBucket\UrlBucket.csproj", "{224F1F3B-7EE4-4836-8DCA-B1D1BB43D404}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UrlBucket", "UrlBucket\UrlBucket.csproj", "{224F1F3B-7EE4-4836-8DCA-B1D1BB43D404}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UrlBucket.Lib", "UrlBucket.Lib\UrlBucket.Lib.csproj", "{95E8C5A6-81F4-45CD-AC3C-E1B868D48701}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UrlBucket.Lib", "UrlBucket.Lib\UrlBucket.Lib.csproj", "{95E8C5A6-81F4-45CD-AC3C-E1B868D48701}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UrlBucket.Tests", "UrlBucket.Tests\UrlBucket.Tests.csproj", "{AA429558-2889-4A69-B60B-BBC7D675ADA7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{95E8C5A6-81F4-45CD-AC3C-E1B868D48701}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{95E8C5A6-81F4-45CD-AC3C-E1B868D48701}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{95E8C5A6-81F4-45CD-AC3C-E1B868D48701}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AA429558-2889-4A69-B60B-BBC7D675ADA7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA429558-2889-4A69-B60B-BBC7D675ADA7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AA429558-2889-4A69-B60B-BBC7D675ADA7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AA429558-2889-4A69-B60B-BBC7D675ADA7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
