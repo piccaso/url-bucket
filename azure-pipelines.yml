@@ -14,7 +14,7 @@ steps:
   displayName: Start integration test infrastructure
 - script: dotnet build --configuration $(buildConfiguration)
   displayName: Build
-- script: dotnet test <test-project> --logger trx --collect "Code coverage"
+- script: dotnet test UrlBucket.Tests/UrlBucket.Tests.csproj --logger trx --collect "Code coverage"
   displayName: Run tests
   env:
     MINIO_ENDPOINT: "localhost:9000"
