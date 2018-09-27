@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <Target Name="NSwag" AfterTargets="Build">
-    <Exec Command="$(NSwagExe) swagger2csclient /input:swagger.json /output:ApiClient.cs /classname:ApiClient /namespace:UrlBucket.Tests /injecthttpclient:true" />
+    <Exec Command="$(NSwagExe_Core21) swagger2csclient /input:swagger.json /output:ApiClient.cs /classname:ApiClient /namespace:UrlBucket.Tests /injecthttpclient:true" />
   </Target>
 
 
