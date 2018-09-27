@@ -9,6 +9,10 @@
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing">
       <Version>2.1.2</Version>
     </PackageReference>
+    <PackageReference Include="NSwag.MSBuild" Version="11.19.2">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="nunit" Version="3.10.1" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.10.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.8.0" />
@@ -17,6 +21,10 @@
   <ItemGroup>
     <ProjectReference Include="..\UrlBucket\UrlBucket.csproj" />
   </ItemGroup>
+
+  <Target Name="NSwag" AfterTargets="Build">
+    <Exec Command="$(NSwagExe) swagger2csclient /input:swagger.json /output:ApiClient.cs /classname:ApiClient /namespace:UrlBucket.Tests /injecthttpclient:true" />
+  </Target>
 
 
 </Project>
