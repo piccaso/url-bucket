@@ -26,7 +26,11 @@ namespace UrlBucket {
             var xmlComments = Directory.GetFiles(AppContext.BaseDirectory, "*.xml");
 
             services.AddSwaggerGen(c => {
-                c.SwaggerDoc("v1", new Info { Title = "UrlBucket API", Version = "v1" });
+                c.SwaggerDoc("v1", new Info {
+                    Title = "UrlBucket API", Version = "v1",
+                    License = new License {Name = "MIT", Url = "https://github.com/piccaso/url-bucket/blob/master/LICENSE"},
+                    Contact = new Contact {Url = "https://github.com/piccaso/url-bucket", Name = "UrlBucket"},
+                });
                 foreach (var xmlComment in xmlComments) {
                     c.IncludeXmlComments(xmlComment);
                 }
