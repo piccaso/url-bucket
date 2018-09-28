@@ -6,22 +6,75 @@
 pool:
   vmImage: 'Ubuntu 16.04'
 
+# Predefined variables: https://docs.microsoft.com/en-us/azure/devops/pipelines/build/variables
 variables:
   buildConfiguration: 'Release'
+  buildBaseName: '$(Build.DefinitionName)-$(Build.SourceBranchName)'
+  dockerImageName: '0xff/tmp:$(Build.SourceVersion)'
+  dockerHostName: '$(buildBaseName).ci.p.887.at'
+  deployFolder: '/home/flo/docker/cicd/$(dockerHostName)'
 
 steps:
+- script: env
+  displayName: Print environment
+
 - script: docker-compose -f integration-tests.yml up -d
   displayName: Start integration test infrastructure
+
 - script: dotnet build --configuration $(buildConfiguration)
   displayName: Build
+
 - script: dotnet test UrlBucket.Tests/UrlBucket.Tests.csproj --logger trx --collect "Code coverage"
   displayName: Run tests
   env:
     MINIO_ENDPOINT: "localhost:9000"
     MINIO_SSL: "False"
+
 - task: PublishTestResults@2
   inputs:
     testRunner: VSTest
     testResultsFiles: '**/*.trx'
+
 - script: docker-compose -f integration-tests.yml down || true
   displayName: Cleanup
+
+# build, tag and push container
+- task: Docker@1
+  displayName: 'Build docker image'
+  inputs:
+    imageName: $(dockerImageName)
+
+- task: Docker@1
+  displayName: Login to container registry
+  inputs:
+    containerregistrytype: 'Container Registry'
+    dockerRegistryEndpoint: '0xff@dockerhub'
+    command: login
+
+- task: Docker@1
+  displayName: 'Push docker image'
+  inputs:
+    command: 'push'
+    imageName: $(dockerImageName)
+
+# publish
+- script: docker-compose -f stage.yml config > $(Build.ArtifactStagingDirectory)/docker-compose.yml
+  displayName: Build docker-compose.yml
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact'
+  inputs:
+    PathtoPublish: '$(build.artifactstagingdirectory)'  
+
+# deploy    
+- task: CopyFilesOverSSH@0
+  inputs:
+    sshEndpoint: flo@p.887.at
+    sourceFolder: $(Build.ArtifactStagingDirectory)
+    contents: 'docker-compose.yml' 
+    targetFolder: $(deployFolder)
+
+- task: SSH@0
+  inputs:
+    sshEndpoint: flo@p.887.at
+    commands: /bin/bash -c "cd '$(deployFolder)' && docker-compose pull && docker-compose up -d" 2>&1
