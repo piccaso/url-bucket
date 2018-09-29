@@ -28,16 +28,16 @@ namespace UrlBucket.Controllers {
 
         private ProblemDetails Sucess(int status = StatusCodes.Status200OK) => new ProblemDetails {Status = status, Title = "Sucess"};
 
-        private BadRequestObjectResult Exception(Exception e) {
+        private BadRequestObjectResult Exception(Exception e, int status = StatusCodes.Status400BadRequest) {
             _logger.LogError(e, "");
             var pd = new ProblemDetails {
-                Status = 400,
+                Status = status,
                 Title = e.Message,
                 Detail = e.GetType().FullName,
             };
             try {
                 var frame = new StackTrace(e, true).GetFrame(0);
-                var details = $" Method:{frame.GetMethod()} Line:{frame.GetFileLineNumber()} File:{frame.GetFileName()}";
+                pd.Detail = $" Method:{frame.GetMethod()} Line:{frame.GetFileLineNumber()} File:{frame.GetFileName()}";
             }
             catch {
                 // no stacktrace available (release build without pdb...)
