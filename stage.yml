@@ -32,10 +32,9 @@ services:
       MINIO_SSL: "false" 
     networks:
       - internal
-      - caddy
+      - caddy_caddy
 
 networks:
   internal:
-  caddy:
-    external:
-      name: caddy_caddy
+  caddy_caddy:
+    external: true
