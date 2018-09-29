@@ -77,4 +77,4 @@ steps:
 - task: SSH@0
   inputs:
     sshEndpoint: flo@p.887.at
-    commands: /bin/bash -c "cd '$(deployFolder)' && docker-compose pull && docker-compose up -d" 2>&1
+    commands: /bin/bash -c "cd '$(deployFolder)' && docker-compose pull && docker-compose up -p '$(dockerHostName)' -d" 2>&1

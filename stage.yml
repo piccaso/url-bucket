@@ -1,4 +1,4 @@
-version: "2"
+version: "2.3"
 
 services:
   minio:
@@ -17,7 +17,10 @@ services:
       caddy.address: ${DOCKERHOSTNAME}
       caddy.header /: Strict-Transport-Security "max-age=31536000;"'
       caddy.proxy.websocket: transparent
-      caddy.push /: /swagger/v1/swagger.json /swagger/swagger-ui-bundle.js
+      caddy.push /: |
+         /swagger/v1/swagger.json
+         /swagger/swagger-ui-bundle.js
+         /swagger/swagger-ui.css
     read_only: true
     tmpfs:
       - /tmp

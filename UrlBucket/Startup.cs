@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -30,10 +31,20 @@ namespace UrlBucket {
                     Title = "UrlBucket API", Version = "v1",
                     License = new License {Name = "MIT", Url = "https://github.com/piccaso/url-bucket/blob/master/LICENSE"},
                     Contact = new Contact {Url = "https://github.com/piccaso/url-bucket", Name = "UrlBucket"},
+                    Description = "Small wrapper around minio to store web assets.",
                 });
                 foreach (var xmlComment in xmlComments) {
                     c.IncludeXmlComments(xmlComment);
                 }
+                // TODO: Authentication
+                //c.AddSecurityDefinition("apiKey", new ApiKeyScheme {
+                //    Name = "X-API-KEY",
+                //    In = "header",
+                //    Type = "apiKey"
+                //});
+                //c.AddSecurityRequirement(new Dictionary<string, IEnumerable<string>>() {
+                //    {"apiKey", new string[]{} }
+                //});
             });
 
             services.AddTransient<StorageService>();
