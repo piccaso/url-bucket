@@ -1,19 +1,15 @@
 version: "2"
 
 services:
+  
   minio:
     hostname: minio
-    image: minio/minio:RELEASE.2018-08-25T01-56-38Z
-    # the following releases have problems creating a new bucket:
-    #  - RELEASE.2018-09-12T18-49-56Z
-    #  - RELEASE.2018-09-11T01-39-21Z
-    #  - RELEASE.2018-09-01T00-38-25Z
-    # its may be possible to upgrade but will not work on the first run
-    # the EDGE version works fine (2018-09-23) so the next release should be good
+    image: minio/minio:RELEASE.2018-09-25T21-34-43Z
     environment:
       MINIO_ACCESS_KEY: minio
       MINIO_SECRET_KEY: minio123
     command: server /data
+
   url-bucket:
     image: quay.io/0xff/url-bucket # also avaiable on dockerhub, but quay is faster (for me)
     # build: ../ # use this instead of the `image` above to build from source
@@ -22,7 +18,10 @@ services:
     read_only: true
     tmpfs:
       - /tmp
-      - /var/run
+    cap_drop:
+      - ALL
+    cap_add:
+      - NET_BIND_SERVICE
     environment:
       MINIO_ACCESS_KEY: minio
       MINIO_SECRET_KEY: minio123
