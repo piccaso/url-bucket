@@ -8,6 +8,8 @@ services:
       MINIO_ACCESS_KEY: minio
       MINIO_SECRET_KEY: ${SYSTEM_TIMELINEID}
     command: server /data
+    volumes:
+      - minio_data:/data
     networks:
       - internal
       
@@ -42,3 +44,6 @@ networks:
   internal:
   caddy_caddy:
     external: true
+
+volumes:
+  minio_data:    
