@@ -42,21 +42,23 @@ namespace UrlBucket.Tests
     
         /// <summary>Stores an asset after downloading it from the given URL.</summary>
         /// <param name="url">The URL where the asset is currently located</param>
-        /// <param name="userAgent">Optional 'user-agent' header to use when downloading</param>
+        /// <param name="userAgent">Optional, 'user-agent' header to use when downloading (default: null - no user agent)</param>
+        /// <param name="overwriteExisting">Optional, overwrite existing file (default: true)</param>
         /// <returns>Success</returns>
         /// <exception cref="SwaggerException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<ProblemDetails> ApiStoreUrlGetAsync(string url, string userAgent)
+        public System.Threading.Tasks.Task<ProblemDetails> ApiStoreUrlGetAsync(string url, string userAgent, bool? overwriteExisting)
         {
-            return ApiStoreUrlGetAsync(url, userAgent, System.Threading.CancellationToken.None);
+            return ApiStoreUrlGetAsync(url, userAgent, overwriteExisting, System.Threading.CancellationToken.None);
         }
     
         /// <summary>Stores an asset after downloading it from the given URL.</summary>
         /// <param name="url">The URL where the asset is currently located</param>
-        /// <param name="userAgent">Optional 'user-agent' header to use when downloading</param>
+        /// <param name="userAgent">Optional, 'user-agent' header to use when downloading (default: null - no user agent)</param>
+        /// <param name="overwriteExisting">Optional, overwrite existing file (default: true)</param>
         /// <returns>Success</returns>
         /// <exception cref="SwaggerException">A server side error occurred.</exception>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        public async System.Threading.Tasks.Task<ProblemDetails> ApiStoreUrlGetAsync(string url, string userAgent, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<ProblemDetails> ApiStoreUrlGetAsync(string url, string userAgent, bool? overwriteExisting, System.Threading.CancellationToken cancellationToken)
         {
             if (url == null)
                 throw new System.ArgumentNullException("url");
@@ -67,6 +69,10 @@ namespace UrlBucket.Tests
             if (userAgent != null) 
             {
                 urlBuilder_.Append("userAgent=").Append(System.Uri.EscapeDataString(ConvertToString(userAgent, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            }
+            if (overwriteExisting != null) 
+            {
+                urlBuilder_.Append("overwriteExisting=").Append(System.Uri.EscapeDataString(ConvertToString(overwriteExisting, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
             }
             urlBuilder_.Length--;
     

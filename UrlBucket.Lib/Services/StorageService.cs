@@ -56,6 +56,25 @@ namespace UrlBucket.Lib.Services {
             }
         }
 
+        public async Task<bool> FileExistsAsync(Uri url, CancellationToken ct = default(CancellationToken)) {
+            var objectName = url.ToObjectName();
+            return await FileExistsAsync(objectName, ct);
+        }
+
+        public async Task<bool> FileExistsAsync(string objectName, CancellationToken ct = default(CancellationToken)) {
+            try {
+                var client = CreateClient();
+                var stat = await client.StatObjectAsync(_bucketName, objectName, ct);
+                return stat.Size > 0;
+            }
+            catch (BucketNotFoundException) {
+                return false;
+            }
+            catch (ObjectNotFoundException) {
+                return false;
+            }
+        }
+
         public async Task<DownloadFileModel> DownloadFileAsync(Uri url, CancellationToken ct = default(CancellationToken)) {
             var objectName = url.ToObjectName();
             return await DownloadFileAsync(objectName, ct);

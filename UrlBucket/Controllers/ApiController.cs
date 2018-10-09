@@ -51,16 +51,21 @@ namespace UrlBucket.Controllers {
         /// Stores an asset after downloading it from the given URL.
         /// </summary>
         /// <param name="url">The URL where the asset is currently located</param>
-        /// <param name="userAgent">Optional 'user-agent' header to use when downloading</param>
+        /// <param name="userAgent">Optional, 'user-agent' header to use when downloading (default: null - no user agent)</param>
+        /// <param name="overwriteExisting">Optional, overwrite existing file (default: true)</param>
         /// <param name="ct"></param>
         /// <returns></returns>
         [HttpGet("store-url")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<ProblemDetails>> Get([Required] Uri url, string userAgent = null, CancellationToken ct = default(CancellationToken)) {
+        public async Task<ActionResult<ProblemDetails>> StoreUrl([Required] Uri url, string userAgent = null, bool? overwriteExisting = null, CancellationToken ct = default(CancellationToken)) {
             try {
-                var file = await _downloadService.DownloadUrlAsync(url, userAgent);
-                await _storageService.UploadFileAsync(file, ct);
+                var overwrite = overwriteExisting ?? true;
+                var proceed = overwrite || !await _storageService.FileExistsAsync(url, ct);
+                if (proceed) {
+                    var file = await _downloadService.DownloadUrlAsync(url, userAgent);
+                    await _storageService.UploadFileAsync(file, ct);
+                }
                 return Sucess();
             }
             catch (Exception e) {
