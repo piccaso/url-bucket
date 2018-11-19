@@ -9,7 +9,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing">
       <Version>2.1.2</Version>
     </PackageReference>
-    <PackageReference Include="NSwag.MSBuild" Version="11.19.2">
+    <PackageReference Include="NSwag.MSBuild" Version="12.0.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
