@@ -86,9 +86,9 @@ namespace UrlBucket.Lib.Services {
                 var statTask = client.StatObjectAsync(_bucketName, objectName, ct);
                 var fm = new DownloadFileModel();
                 using (var ms = new MemoryStream()) {
-                    await client.GetObjectAsync(_bucketName, objectName, async s => {
+                    await client.GetObjectAsync(_bucketName, objectName, s => {
                         // ReSharper disable once AccessToDisposedClosure
-                        await s.CopyToAsync(ms);
+                        s.CopyTo(ms);
                     }, ct);
                     fm.Content = ms.ToArray();
                 }
