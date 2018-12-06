@@ -28,22 +28,5 @@ namespace UrlBucket.Tests {
             response.EnsureSuccessStatusCode();
         }
 
-        // [Test] //TODO
-        public async Task StoreFile() {
-            var client = _factory.CreateClient();
-            var model = new Dictionary<string, string> {
-                {"url", "xxx://yyy"},
-                {"contentType", "text/plain" },
-                {"content", "Hello World" },
-            };
-            var json = JToken.FromObject(model).ToString();
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
-
-            var response = await client.PostAsync("api/store-file", content);         
-            var responseText = await response.Content.ReadAsStringAsync();
-            TestContext.WriteLine(responseText);
-
-            response.EnsureSuccessStatusCode();
-        }
     }
 }
