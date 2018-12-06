@@ -11,22 +11,21 @@ using UrlBucket.Lib.Models;
 
 namespace UrlBucket.Lib.Services {
     public class StorageService {
+        private readonly IConfig _config;
+        public StorageService(IConfig config) {
+            _config = config;
+        }
+
         private string _bucketName;
         private static bool? _bucketExists;
         private MinioClient CreateClient() {
 
-            string E(string name, string defaultValue) {
-                var val = Environment.GetEnvironmentVariable(name);
-                val = string.IsNullOrEmpty(val) ? null : val;
-                return val ?? defaultValue;
-            }
-
-            var endpoint = E("MINIO_ENDPOINT", "play.minio.io:9000");
-            var accessKey = E("MINIO_ACCESS_KEY", "Q3AM3UQ867SPQQA43P2F");
-            var secretKey = E("MINIO_SECRET_KEY", "zuf+tfteSlswRu7BJ86wekitnifILbZam1KYY3TG");
-            var region = E("MINIO_REGION", "");
-            _bucketName = E("MINIO_BUCKET_NAME", "combinary");
-            var ssl = bool.Parse(E("MINIO_SSL", "True"));
+            var endpoint = _config.GetValue("MINIO_ENDPOINT", "play.minio.io:9000");
+            var accessKey = _config.GetValue("MINIO_ACCESS_KEY", "Q3AM3UQ867SPQQA43P2F");
+            var secretKey = _config.GetValue("MINIO_SECRET_KEY", "zuf+tfteSlswRu7BJ86wekitnifILbZam1KYY3TG");
+            var region = _config.GetValue("MINIO_REGION", "");
+            _bucketName = _config.GetValue("MINIO_BUCKET_NAME", "combinary");
+            var ssl = bool.Parse(_config.GetValue("MINIO_SSL", "True"));
 
             var minio = new MinioClient(endpoint, accessKey, secretKey, region);
             if (ssl) minio = minio.WithSSL();

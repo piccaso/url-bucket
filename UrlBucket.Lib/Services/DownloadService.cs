@@ -11,9 +11,10 @@ using UrlBucket.Lib.Models;
 
 namespace UrlBucket.Lib.Services {
     public class DownloadService {
-
-        public DownloadService() {
-            if(!long.TryParse(Environment.GetEnvironmentVariable("SIZE_LIMIT"), out _sizeLimit)) {
+        private readonly IConfig _config;
+        public DownloadService(IConfig config) {
+            _config = config;
+            if(!long.TryParse(_config.GetValue("SIZE_LIMIT"), out _sizeLimit)) {
                 _sizeLimit = 1_048_576; // 1MB
             }
         }
@@ -25,7 +26,7 @@ namespace UrlBucket.Lib.Services {
                 ObjectName = url.ToObjectName(),
             };
             using (var httpClient = new HttpClient()) {
-                var ua = userAgent ?? Environment.GetEnvironmentVariable("DOWNLOAD_USER_AGENT");
+                var ua = userAgent ?? _config.GetValue("DOWNLOAD_USER_AGENT");
                 var response = await httpClient.SendAsync(HttpMethod.Get, url, ua, _sizeLimit, ct: ct);
                 fm.Content = response.Content;
                 fm.ContentType = response.ContentType;

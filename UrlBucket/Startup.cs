@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Swashbuckle.AspNetCore.Swagger;
+using UrlBucket.Lib.Helper;
 using UrlBucket.Lib.Services;
 
 namespace UrlBucket {
@@ -49,6 +50,7 @@ namespace UrlBucket {
 
             services.AddTransient<StorageService>();
             services.AddTransient<DownloadService>();
+            services.AddTransient<IConfig, Config>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
