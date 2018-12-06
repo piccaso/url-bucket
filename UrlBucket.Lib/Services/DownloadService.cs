@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Net.Http;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using MimeDetective;
 using UrlBucket.Lib.Helper;
@@ -12,26 +14,21 @@ namespace UrlBucket.Lib.Services {
 
         public DownloadService() {
             if(!long.TryParse(Environment.GetEnvironmentVariable("SIZE_LIMIT"), out _sizeLimit)) {
-                _sizeLimit = 3_145_728L;
+                _sizeLimit = 1_048_576; // 1MB
             }
         }
 
-        public async Task<FileModel> DownloadUrlAsync(Uri url, string userAgent = null) {
+        public async Task<FileModel> DownloadUrlAsync(Uri url, string userAgent = null, CancellationToken ct = default(CancellationToken)) {
             if (url == null) throw new ArgumentNullException(nameof(url));
             if (string.IsNullOrEmpty(userAgent)) userAgent = null;
             var fm = new FileModel {
                 ObjectName = url.ToObjectName(),
             };
-
-            using (var wc = new WebClient()) {
-                wc.DownloadProgressChanged += OnDownloadProgressChanged;
+            using (var httpClient = new HttpClient()) {
                 var ua = userAgent ?? Environment.GetEnvironmentVariable("DOWNLOAD_USER_AGENT");
-                if (!string.IsNullOrWhiteSpace(ua)) {
-                    wc.Headers.Add("user-agent", ua);
-                }
-
-                fm.Content = await wc.DownloadDataTaskAsync(url);
-                fm.ContentType = wc.ResponseHeaders["content-type"];
+                var response = await httpClient.SendAsync(HttpMethod.Get, url, ua, _sizeLimit, ct: ct);
+                fm.Content = response.Content;
+                fm.ContentType = response.ContentType;
                 if (string.IsNullOrEmpty(fm.ContentType) && fm.Content != null && fm.Content.Length > 1) {
                     var contentType = MimeTypes.GetFileType(() => fm.Content, null, fm.Content);
                     if (contentType != null && !string.IsNullOrWhiteSpace(contentType.Mime)) {
@@ -39,23 +36,10 @@ namespace UrlBucket.Lib.Services {
                     }
                 }
             }
-
+            
             return fm;
         }
 
         private readonly long _sizeLimit;
-
-        private void OnDownloadProgressChanged(object o, DownloadProgressChangedEventArgs ev) {
-            var wc = (WebClient)o;
-            if (ev.TotalBytesToReceive >= _sizeLimit) {
-                Console.WriteLine($"totalSize >= sizeLimit ({ev.TotalBytesToReceive} >= {_sizeLimit})");
-                wc.CancelAsync();
-            }
-
-            if (ev.BytesReceived >= _sizeLimit) {
-                Console.WriteLine($"bytesReceived >= sizeLimit ({ev.BytesReceived} >= {_sizeLimit})");
-                wc.CancelAsync();
-            }
-        }
     }
 }
