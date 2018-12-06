@@ -19,6 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\UrlBucket.Lib\UrlBucket.Lib.csproj" />
     <ProjectReference Include="..\UrlBucket\UrlBucket.csproj" />
   </ItemGroup>
 
