@@ -63,7 +63,7 @@ namespace UrlBucket.Controllers {
                 var overwrite = overwriteExisting ?? true;
                 var proceed = overwrite || !await _storageService.FileExistsAsync(url, ct);
                 if (proceed) {
-                    var file = await _downloadService.DownloadUrlAsync(url, userAgent);
+                    var file = await _downloadService.DownloadUrlAsync(url, userAgent, ct);
                     await _storageService.UploadFileAsync(file, ct);
                 }
                 return Sucess();
@@ -122,7 +122,7 @@ namespace UrlBucket.Controllers {
         }
 
         /// <summary>
-        /// Retrieves a previously stored asset as HTTP Response.
+        /// Retrieves a previously stored asset as HTTP Response or downloads the asset if it does not exist.
         /// </summary>
         /// <param name="url">The URL identifying the asset</param>
         /// <param name="ct"></param>
@@ -133,7 +133,11 @@ namespace UrlBucket.Controllers {
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<byte[]>> RetrieveBytes([Required] Uri url, CancellationToken ct = default(CancellationToken)) {
             try {
-                var file = await _storageService.DownloadFileAsync(url, ct);
+                FileModel file = await _storageService.DownloadFileAsync(url, ct);
+                if (file is null) {
+                    file = await _downloadService.DownloadUrlAsync(url, null, ct);
+                    await _storageService.UploadFileAsync(file, ct);
+                }
                 if (file is null) return FileNotFound();
                 return File(file.Content, file.ContentType);
             }
