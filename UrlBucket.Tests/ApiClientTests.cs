@@ -9,7 +9,7 @@ using NUnit.Framework;
 
 namespace UrlBucket.Tests {
     public class ApiClientTests {
-        private WebApplicationFactory<Startup> _factory;
+        private readonly WebApplicationFactory<Startup> _factory;
 
         public ApiClientTests() {
             _factory = new WebApplicationFactory<Startup>();
@@ -30,6 +30,10 @@ namespace UrlBucket.Tests {
 
             Assert.AreEqual(StatusCodes.Status200OK, storeResponse.Status);
             Assert.AreEqual(bytes, retrievedFile.Content);
+
+            var httpClient = _factory.CreateClient();
+            var bytesResponse = await httpClient.GetByteArrayAsync($"api/retrieve-bytes?url={Uri.EscapeDataString("xxx://xxx")}");
+            Assert.AreEqual(bytes, bytesResponse);
         }
     }
 }
