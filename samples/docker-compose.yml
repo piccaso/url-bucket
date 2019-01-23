@@ -3,10 +3,10 @@ version: "2"
 services:
   
   url-bucket:
-    image: quay.io/0xff/url-bucket # also avaiable on dockerhub, but quay is faster (for me)
-    # build: ../ # use this instead of the `image` above to build from source
+#    image: quay.io/0xff/url-bucket # also avaiable on dockerhub, but quay is faster (for me)
+    build: ../ # use this instead of the `image` above to build from source
     ports:
-      - "8080:80"
+      - "8080:8080"
     read_only: true
     tmpfs:
       - /tmp
