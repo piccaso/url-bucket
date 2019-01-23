@@ -51,7 +51,7 @@ namespace UrlBucket.Lib.Services {
             }
 
             using (var ms = new MemoryStream(content)) {
-                await client.PutObjectAsync(_bucketName, objectName, ms, ms.Length, contentType, metaData.ToDictionary(), ct);
+                await client.PutObjectAsync(_bucketName, objectName, ms, ms.Length, contentType, metaData.ToDictionary(), cancellationToken: ct);
             }
         }
 
@@ -63,7 +63,7 @@ namespace UrlBucket.Lib.Services {
         public async Task<bool> FileExistsAsync(string objectName, CancellationToken ct = default(CancellationToken)) {
             try {
                 var client = CreateClient();
-                var stat = await client.StatObjectAsync(_bucketName, objectName, ct);
+                var stat = await client.StatObjectAsync(_bucketName, objectName, cancellationToken: ct);
                 return stat.Size > 0;
             }
             catch (BucketNotFoundException) {
@@ -82,13 +82,13 @@ namespace UrlBucket.Lib.Services {
         public async Task<DownloadFileModel> DownloadFileAsync(string objectName, CancellationToken ct = default(CancellationToken)) {
             try {
                 var client = CreateClient();
-                var statTask = client.StatObjectAsync(_bucketName, objectName, ct);
+                var statTask = client.StatObjectAsync(_bucketName, objectName, cancellationToken: ct);
                 var fm = new DownloadFileModel();
                 using (var ms = new MemoryStream()) {
                     await client.GetObjectAsync(_bucketName, objectName, s => {
                         // ReSharper disable once AccessToDisposedClosure
                         s.CopyTo(ms);
-                    }, ct);
+                    }, cancellationToken: ct);
                     fm.Content = ms.ToArray();
                 }
 
