@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Testing;
 using NUnit.Framework;
+using UrlBucket.Client;
 
 namespace UrlBucket.Tests {
     public class ApiClientTests {

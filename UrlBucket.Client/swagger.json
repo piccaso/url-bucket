@@ -130,7 +130,7 @@
     "/api/retrieve-bytes": {
       "get": {
         "tags": [ "Api" ],
-        "summary": "Retrieves a previously stored asset as HTTP Response.",
+        "summary": "Retrieves a previously stored asset as HTTP Response or downloads the asset if it does not exist.",
         "operationId": "ApiRetrieve-bytesGet",
         "consumes": [],
         "produces": [ "text/plain", "application/json", "text/json" ],
@@ -172,6 +172,7 @@
       }
     },
     "DownloadFileModel": {
+      "required": [ "content" ],
       "type": "object",
       "properties": {
         "objectName": { "type": "string" },

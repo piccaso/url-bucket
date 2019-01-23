@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard1.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
+    <PackageReference Include="System.ComponentModel.Annotations" Version="4.5.0" />
+    <PackageReference Include="NSwag.MSBuild" Version="12.0.11">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <Target Name="NSwag" BeforeTargets="BeforeBuild">
+    <Exec Command="$(NSwagExe_Core21) swagger2csclient /input:swagger.json /output:ApiClient.cs /classname:ApiClient /namespace:UrlBucket.Client /injecthttpclient:true" />
+  </Target>
+
+</Project>

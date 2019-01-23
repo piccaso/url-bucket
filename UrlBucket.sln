@@ -7,7 +7,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UrlBucket", "UrlBucket\UrlB
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UrlBucket.Lib", "UrlBucket.Lib\UrlBucket.Lib.csproj", "{95E8C5A6-81F4-45CD-AC3C-E1B868D48701}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UrlBucket.Tests", "UrlBucket.Tests\UrlBucket.Tests.csproj", "{AA429558-2889-4A69-B60B-BBC7D675ADA7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UrlBucket.Tests", "UrlBucket.Tests\UrlBucket.Tests.csproj", "{AA429558-2889-4A69-B60B-BBC7D675ADA7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UrlBucket.Client", "UrlBucket.Client\UrlBucket.Client.csproj", "{BFACC934-4B4B-4971-A47F-5908E7296A20}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{AA429558-2889-4A69-B60B-BBC7D675ADA7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AA429558-2889-4A69-B60B-BBC7D675ADA7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AA429558-2889-4A69-B60B-BBC7D675ADA7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BFACC934-4B4B-4971-A47F-5908E7296A20}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BFACC934-4B4B-4971-A47F-5908E7296A20}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BFACC934-4B4B-4971-A47F-5908E7296A20}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BFACC934-4B4B-4971-A47F-5908E7296A20}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
