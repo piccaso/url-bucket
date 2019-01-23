@@ -8,7 +8,7 @@ The latest API can be viewed online: [editor.swagger.io](https://editor.swagger.
 
 For a quick demo run:
 ```sh
-docker run -d -p 8080:80 0xff/url-bucket
+docker run -d -p 8080:8080 0xff/url-bucket
 ```
 And point your Browser to [localhost:8080](http://localhost:8080/).
 
