@@ -66,14 +66,14 @@ steps:
   inputs:
     PathtoPublish: '$(build.artifactstagingdirectory)'  
 
-# deploy    
-- task: CopyFilesOverSSH@0
-  inputs:
-    sshEndpoint: flo@p.887.at
-    sourceFolder: $(Build.ArtifactStagingDirectory)
-    targetFolder: $(deployFolder)
+# # deploy    
+# - task: CopyFilesOverSSH@0
+#   inputs:
+#     sshEndpoint: flo@p.887.at
+#     sourceFolder: $(Build.ArtifactStagingDirectory)
+#     targetFolder: $(deployFolder)
 
-- task: SSH@0
-  inputs:
-    sshEndpoint: flo@p.887.at
-    commands: /bin/bash -c "cd '$(deployFolder)' && docker-compose pull && docker-compose up -d" 2>&1
+# - task: SSH@0
+#   inputs:
+#     sshEndpoint: flo@p.887.at
+#     commands: /bin/bash -c "cd '$(deployFolder)' && docker-compose pull && docker-compose up -d" 2>&1
