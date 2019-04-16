@@ -4,7 +4,7 @@ Small wrapper around [minio](https://www.minio.io/) to store web assets.
 It provides a REST API and includes Swagger UI - packaged as [docker container](https://hub.docker.com/r/0xff/url-bucket/).  
 By default it will use the demo minio instance running at [play.minio.io](http://play.minio.io/).  
 
-The latest API can be viewed online: [editor.swagger.io](https://editor.swagger.io?url=https://raw.githubusercontent.com/piccaso/url-bucket/master/UrlBucket.Tests/swagger.json)  
+The latest API can be viewed online: [editor.swagger.io](https://editor.swagger.io?url=https://raw.githubusercontent.com/piccaso/url-bucket/master/UrlBucket.Client/swagger.json)  
 
 For a quick demo run:
 ```sh
