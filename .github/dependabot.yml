@@ -1,0 +1,44 @@
+version: 2
+updates:
+- package-ecosystem: nuget
+  directory: "/"
+  schedule:
+    interval: daily
+    time: "04:00"
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: Swashbuckle.AspNetCore
+    versions:
+    - 5.6.3
+    - 6.0.2
+    - 6.0.4
+    - 6.0.5
+    - 6.0.7
+    - 6.1.0
+    - 6.1.1
+    - 6.1.2
+  - dependency-name: Microsoft.AspNetCore.Mvc.Testing
+    versions:
+    - 5.0.2
+    - 5.0.3
+    - 5.0.4
+  - dependency-name: NSwag.MSBuild
+    versions:
+    - 13.10.1
+    - 13.10.2
+    - 13.10.3
+    - 13.10.5
+    - 13.10.6
+    - 13.10.7
+    - 13.10.8
+  - dependency-name: Microsoft.NET.Test.Sdk
+    versions:
+    - 16.8.3
+    - 16.9.1
+  - dependency-name: nunit
+    versions:
+    - 3.13.0
+    - 3.13.1
+  - dependency-name: Newtonsoft.Json
+    versions:
+    - 12.0.3
